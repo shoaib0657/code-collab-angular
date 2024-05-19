@@ -1,0 +1,28 @@
+<div class="homePageWrapper">
+    <div class="formWrapper">
+
+        <img class="homePageLogo" src="../../../../assets/code-collab.png" alt="code-collab-logo">
+
+        <h4 class="mainLabel">Paste Invitation ROOM ID</h4>
+
+        <div class="inputGroup">
+
+            <input type="text" class="inputBox" placeholder="ROOM ID" [(ngModel)]="roomId">
+            <input type="text" class="inputBox" placeholder="USERNAME" [(ngModel)]="username">
+
+            <button class="btn joinBtn">Join</button>
+
+            <span class="createInfo">
+                Don't have an invite, create a <a (click)="createNewRoom($event)" href="" class="createNewBtn">new room</a>
+            </span>
+        </div>
+
+    </div>
+
+    <footer>
+        <h4>
+            Made with ❤️ by <a href='https://github.com/shoaib0657'>Shoaib</a>
+        </h4>
+    </footer>
+
+</div>

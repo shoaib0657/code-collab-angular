@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { v4 as uuid } from 'uuid';
 import { FormsModule } from '@angular/forms';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-home',
@@ -11,7 +12,7 @@ import { FormsModule } from '@angular/forms';
 })
 export class HomeComponent {
 
-  constructor() { }
+  constructor(private toastr: ToastrService) { }
 
   roomId: string = '';
   username: string = '';
@@ -19,6 +20,7 @@ export class HomeComponent {
   createNewRoom(event: Event) {
     event.preventDefault();
     this.roomId = uuid();
+    this.toastr.success('Room created successfully');
   }
 
 }

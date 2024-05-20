@@ -7,10 +7,10 @@
 
         <div class="inputGroup">
 
-            <input type="text" class="inputBox" placeholder="ROOM ID" [(ngModel)]="roomId">
-            <input type="text" class="inputBox" placeholder="USERNAME" [(ngModel)]="username">
+            <input type="text" class="inputBox" placeholder="ROOM ID" [(ngModel)]="roomId" (keyup)="handleEnterKeyPress($event)">
+            <input type="text" class="inputBox" placeholder="USERNAME" [(ngModel)]="username" (keyup)="handleEnterKeyPress($event)">
 
-            <button class="btn joinBtn">Join</button>
+            <button class="btn joinBtn" (click)="joinRoom()">Join</button>
 
             <span class="createInfo">
                 Don't have an invite, create a <a (click)="createNewRoom($event)" href="" class="createNewBtn">new room</a>

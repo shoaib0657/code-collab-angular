@@ -1,1 +1,25 @@
-<p>editor-page works!</p>
+<div class="mainWrap">
+    <div class="aside">
+        <div class="asideInner">
+            <div class="logo">
+                <img class="logoImage" src="../../../../assets/code-collab.png" alt="logo">
+            </div>
+
+            <h3>Connected</h3>
+
+            <div class="clientsList">
+                <div *ngFor="let client of clients">
+                    <app-client username="{{client.username}}"></app-client>
+                </div>
+            </div>
+
+        </div>
+
+        <button class="btn copyBtn">Copy ROOM ID</button>
+        <button class="btn leaveBtn">Leave</button>
+    </div>
+
+    <div class="editorWrap">
+        <app-editor></app-editor>
+    </div>
+</div>

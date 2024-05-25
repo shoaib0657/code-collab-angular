@@ -15,11 +15,11 @@
 
         </div>
 
-        <button class="btn copyBtn">Copy ROOM ID</button>
-        <button class="btn leaveBtn">Leave</button>
+        <button class="btn copyBtn" (click)="copyRoomId()">Copy ROOM ID</button>
+        <button class="btn leaveBtn" (click)="leaveRoom()">Leave</button>
     </div>
 
     <div class="editorWrap">
-        <app-editor></app-editor>
+        <app-editor [socket]="socket" [roomId]="roomId" (code)="received($event)"></app-editor>
     </div>
 </div>

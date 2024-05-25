@@ -21,8 +21,4 @@ export class SocketioService {
   getSocket(): Socket {
     return this.socket;
   }
-
-  emitEvent(event: string, data: any): void {
-    this.socket.emit(event, data);
-  }
 }

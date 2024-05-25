@@ -1,7 +1,7 @@
 import express from 'express';
 import http from 'http';
 import { Server } from 'socket.io';
-import { ACTIONS } from './../../frontend/src/app/constants/actions';
+import { ACTIONS } from './actions';
 
 const app = express();
 
@@ -29,6 +29,7 @@ function getAllConnectedClients(roomId: string) {
 }
 
 io.on('connection', (socket) => {
+    
     console.log('socket connected', socket.id);
 
     socket.on(ACTIONS.JOIN, ({ roomId, username }) => {
@@ -45,6 +46,14 @@ io.on('connection', (socket) => {
                 }
             })
         })
+    })
+
+    socket.on(ACTIONS.CODE_CHANGE, ({ roomId, code }) => {
+        socket.in(roomId).emit(ACTIONS.CODE_CHANGE, { code });
+    })
+
+    socket.on(ACTIONS.SYNC_CODE, ({ socketId, code }) => {
+        io.to(socketId).emit(ACTIONS.CODE_CHANGE, { code });
     })
 
     socket.on('disconnecting', () => {

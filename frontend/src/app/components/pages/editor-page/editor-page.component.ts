@@ -6,6 +6,7 @@ import { SocketioService } from '../../../services/socketio.service';
 import { ACTIONS } from '../../../constants/actions';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
+import { Socket } from 'socket.io-client';
 
 @Component({
   selector: 'app-editor-page',
@@ -14,10 +15,16 @@ import { ToastrService } from 'ngx-toastr';
   templateUrl: './editor-page.component.html',
   styleUrl: './editor-page.component.css'
 })
+
 export class EditorPageComponent implements OnInit, OnDestroy {
+
   roomId: string;
   username: string;
   clients: any[] = [];
+
+  code: string = '';
+
+  socket!: Socket;
 
   constructor(
     private socketio: SocketioService,
@@ -37,40 +44,50 @@ export class EditorPageComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.socketio.getSocket().disconnect();
-    this.socketio.getSocket().off(ACTIONS.JOINED);
-    this.socketio.getSocket().off(ACTIONS.DISCONNECTED);
+    this.cleanupSocketConnection();
   }
 
-  initSocketConnection(): void {
-    const socket = this.socketio.getSocket();
+  private cleanupSocketConnection() {
+    this.socket.disconnect();
+    this.socket.off(ACTIONS.JOINED);
+    this.socket.off(ACTIONS.DISCONNECTED);
+  }
 
-    socket.on('connect_error', (error) => {
+  private initSocketConnection(): void {
+    this.socket = this.socketio.getSocket();
+
+    this.socket.on('connect_error', (error) => {
       this.handleErrors(error);
     });
-    socket.on('connect_failed', (error) => {
+    this.socket.on('connect_failed', (error) => {
       this.handleErrors(error);
     });
 
-    this.socketio.emitEvent(ACTIONS.JOIN, {
+    this.socket.emit(ACTIONS.JOIN, {
       roomId: this.roomId,
       username: this.username,
     });
 
     // Listening for joined event
-    socket.on(ACTIONS.JOINED, (data) => {
+    this.socket.on(ACTIONS.JOINED, (data) => {
       this.clients = data.clients;
-      const socketId = data.newClient.socketId;
-      const username = data.newClient.username;
+      const { socketId, username } = data.newClient;
 
       if (username !== this.username) {
         this.toastr.success(`${username} joined the room`);
         console.log('new client joined', data);
       }
+
+      this.socket.emit(ACTIONS.SYNC_CODE, {
+        // send the current code to the new client
+        code: this.code,
+        socketId,
+      })
+
     });
 
     // Listening for disconnected event
-    socket.on(ACTIONS.DISCONNECTED, (data) => {
+    this.socket.on(ACTIONS.DISCONNECTED, (data) => {
       const { socketId, username } = data;
       this.clients = this.clients.filter(
         (client) => client.socketId !== socketId
@@ -84,5 +101,23 @@ export class EditorPageComponent implements OnInit, OnDestroy {
     console.log('socket error', error);
     this.toastr.error('Socket connection failed, try again later.', 'Error');
     this.router.navigate(['/']);
+  }
+
+  async copyRoomId() {
+    try {
+      await navigator.clipboard.writeText(this.roomId);
+      this.toastr.success('Room ID copied to clipboard');
+    } catch (error) {
+      this.toastr.error('Failed to copy room ID');
+      console.error('Failed to copy room ID', error);
+    }
+  }
+
+  leaveRoom(): void {
+    this.router.navigate(['/']);
+  } 
+
+  received(code: string): void {
+    this.code = code;
   }
 }

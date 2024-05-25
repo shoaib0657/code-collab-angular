@@ -1,5 +1,4 @@
-<ngx-codemirror
-  [(ngModel)]="content"
+<ngx-codemirror 
+  #editor
   [options]="codeMirrorOptions"
-  (ngModelChange)="setEditorContent($event)"
 ></ngx-codemirror>

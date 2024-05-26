@@ -2,8 +2,15 @@ import express from 'express';
 import http from 'http';
 import { Server } from 'socket.io';
 import { ACTIONS } from './actions';
+import cors from 'cors';
+import path from 'path';
 
 const app = express();
+app.use(express.json());
+app.use(cors({
+    credentials: true,
+    origin: ['http://localhost:4200']
+}))
 
 const server = http.createServer(app);
 
@@ -29,7 +36,7 @@ function getAllConnectedClients(roomId: string) {
 }
 
 io.on('connection', (socket) => {
-    
+
     console.log('socket connected', socket.id);
 
     socket.on(ACTIONS.JOIN, ({ roomId, username }) => {
@@ -68,6 +75,11 @@ io.on('connection', (socket) => {
 
         delete userSocketMap[socket.id];
     })
+});
+
+app.use(express.static(path.join(__dirname, 'public', 'browser')));
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'browser', 'index.html'));
 });
 
 const PORT = process.env.PORT || 5000;

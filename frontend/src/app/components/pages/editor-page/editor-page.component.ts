@@ -24,6 +24,8 @@ export class EditorPageComponent implements OnInit, OnDestroy {
   code: string = '';
   socket!: Socket;
 
+  isCollapsed = false; // State for the collapsible pane
+
   constructor(
     private socketio: SocketioService,
     private router: Router,
@@ -119,5 +121,9 @@ export class EditorPageComponent implements OnInit, OnDestroy {
 
   received(code: string): void {
     this.code = code;
+  }
+
+  toggleAside(): void {
+    this.isCollapsed = !this.isCollapsed;
   }
 }

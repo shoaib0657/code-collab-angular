@@ -1,4 +1,4 @@
-<div class="mainWrap">
+<div class="mainWrap" [ngClass]="{'collapsed': isCollapsed}">
     <div class="aside">
         <div class="asideInner">
             <div class="logo">
@@ -22,4 +22,8 @@
     <div class="editorWrap">
         <app-editor [socket]="socket" [roomId]="roomId" (code)="received($event)"></app-editor>
     </div>
+
+    <button class="toggleButton" (click)="toggleAside()">
+        {{ isCollapsed ? '▶' : '◀' }}
+    </button>
 </div>

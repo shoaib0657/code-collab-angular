@@ -24,8 +24,6 @@ export class EditorPageComponent implements OnInit, OnDestroy {
   code: string = '';
   socket!: Socket;
 
-  cursors: any = {};
-
   constructor(
     private socketio: SocketioService,
     private router: Router,
@@ -97,10 +95,6 @@ export class EditorPageComponent implements OnInit, OnDestroy {
       this.toastr.warning(`${username} left the room`);
       console.log('client disconnected', data);
     });
-
-    this.socket.on(ACTIONS.CURSOR_POSITION, (data) => {
-      this.cursors[data.socketId] = data.cursor;
-    })
   }
 
   private handleErrors(error: any) {
@@ -125,12 +119,5 @@ export class EditorPageComponent implements OnInit, OnDestroy {
 
   received(code: string): void {
     this.code = code;
-  }
-
-  updateCursorPosition(cursor: any): void {
-    this.socket.emit(ACTIONS.CURSOR_POSITION, {
-      roomId: this.roomId,
-      cursor,
-    })
   }
 }

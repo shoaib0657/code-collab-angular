@@ -19,8 +19,6 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
 
   @ViewChild('editor') codemirrorComponent!: CodemirrorComponent;
 
-  private isCodeChange = false;
-
   private cursorMarkers: { [key: string]: any } = {}; // socketId: marker
   private cursorColors: { [key: string]: string } = {}; // socketId: color
   private usernames: { [key: string]: string } = {}; // socketId: username
@@ -55,7 +53,6 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
           this.code.emit(code);
 
           if (origin !== 'setValue') {
-            this.isCodeChange = true;
             this.socket.emit(ACTIONS.CODE_CHANGE, {
               roomId: this.roomId,
               code,
@@ -65,10 +62,6 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
         });
 
         codeMirrorInstance.on('cursorActivity', () => {
-          if(this.isCodeChange) {
-            this.isCodeChange = false;
-            return;
-          }
           const cursor = codeMirrorInstance.getCursor();
           this.socket.emit(ACTIONS.CURSOR_POSITION, {
             roomId: this.roomId,
@@ -79,7 +72,6 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
         this.socket.on(ACTIONS.CODE_CHANGE, ({ code }) => {
           if (code !== null && codeMirrorInstance.getValue() !== code) {
             const cursor = codeMirrorInstance.getCursor(); // Save the cursor position
-            this.isCodeChange = true;
             codeMirrorInstance.setValue(code);
             codeMirrorInstance.setCursor(cursor); // Restore the cursor position
           }
@@ -122,27 +114,6 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
     if (!this.cursorColors[socketId]) {
       this.cursorColors[socketId] = this.generateColor(socketId);
     }
-
-    // const cursorCoords = codeMirrorInstance.cursorCoords(cursor, 'page');
-    // const cursorElement = document.createElement('div');
-    // cursorElement.className = 'remote-cursor';
-    // cursorElement.style.backgroundColor = this.cursorColors[socketId];
-    
-    // const cursorLabel = document.createElement('div');
-    // cursorLabel.className = 'cursor-label';
-    // cursorLabel.style.backgroundColor = this.cursorColors[socketId];
-    // cursorLabel.innerText = this.usernames[socketId] || 'User';
-
-    // const cursorWrapper = document.createElement('div');
-    // cursorWrapper.className = 'cursor-wrapper';
-    // cursorWrapper.style.left = `${cursorCoords.left}px`;
-    // cursorWrapper.style.top = `${cursorCoords.top}px`;
-
-    // cursorWrapper.appendChild(cursorElement);
-    // cursorWrapper.appendChild(cursorLabel);
-
-    // const marker = codeMirrorInstance.setBookmark(cursor, { widget: cursorWrapper });
-    // this.cursorMarkers[socketId] = marker;
 
     const cursorElement = document.createElement('span');
     cursorElement.style.borderLeftColor = this.cursorColors[socketId];

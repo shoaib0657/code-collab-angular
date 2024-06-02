@@ -8,4 +8,5 @@ exports.ACTIONS = {
     CODE_CHANGE: 'code-change',
     SYNC_CODE: 'sync-code',
     LEAVE: 'leave',
+    CURSOR_POSITION: 'cursor-position',
 };

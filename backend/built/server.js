@@ -16,7 +16,12 @@ app.use((0, cors_1.default)({
     origin: ['http://localhost:4200']
 }));
 var server = http_1.default.createServer(app);
-var io = new socket_io_1.Server(server);
+var io = new socket_io_1.Server(server, {
+    cors: {
+        origin: 'http://localhost:4200',
+        methods: ['GET', 'POST']
+    }
+});
 var userSocketMap = {};
 function getAllConnectedClients(roomId) {
     var clients = io.sockets.adapter.rooms.get(roomId);
@@ -56,6 +61,11 @@ io.on('connection', function (socket) {
         var socketId = _a.socketId, code = _a.code;
         io.to(socketId).emit(actions_1.ACTIONS.CODE_CHANGE, { code: code });
     });
+    socket.on(actions_1.ACTIONS.CURSOR_POSITION, function (_a) {
+        var roomId = _a.roomId, cursor = _a.cursor;
+        var username = userSocketMap[socket.id];
+        socket.in(roomId).emit(actions_1.ACTIONS.CURSOR_POSITION, { cursor: cursor, socketId: socket.id, username: username });
+    });
     socket.on('disconnecting', function () {
         var rooms = Array.from(socket.rooms);
         rooms.forEach(function (roomId) {
@@ -63,7 +73,6 @@ io.on('connection', function (socket) {
                 socketId: socket.id,
                 username: userSocketMap[socket.id]
             });
-            socket.leave(roomId);
         });
         delete userSocketMap[socket.id];
     });

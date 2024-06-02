@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, EventEmitter, Input, OnDestroy, Output, ViewChild, ViewChildren } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, Input, OnDestroy, Output, ViewChild, ViewEncapsulation } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CodemirrorComponent, CodemirrorModule } from '@ctrl/ngx-codemirror';
 import { Socket } from 'socket.io-client';
@@ -10,6 +10,7 @@ import { ACTIONS } from '../../../constants/actions';
   imports: [CodemirrorModule, FormsModule],
   templateUrl: './editor.component.html',
   styleUrl: './editor.component.css',
+  encapsulation: ViewEncapsulation.None
 })
 export class EditorComponent implements AfterViewInit, OnDestroy {
 

@@ -1,0 +1,19 @@
+{
+    "verson": 2,
+    "name": "code-collab",
+    "builds": [
+        {
+            "src": "frontend/package.json",
+            "use": "@vercel/static-build",
+            "config": { "distDir": "backend/built/public/browser" }
+        },
+        {
+            "src": "backend/src/server.ts",
+            "use": "@vercel/node"
+        }
+    ],
+    "routes": [
+        { "src": "/api/.*", "dest": "/backend/src/server.ts" },
+        { "src": "/(.*)", "dest": "/frontend/$1" }
+    ]
+}

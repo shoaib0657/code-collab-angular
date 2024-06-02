@@ -21,9 +21,7 @@ export class EditorPageComponent implements OnInit, OnDestroy {
   roomId: string;
   username: string;
   clients: any[] = [];
-
   code: string = '';
-
   socket!: Socket;
 
   constructor(
@@ -33,7 +31,6 @@ export class EditorPageComponent implements OnInit, OnDestroy {
     private toastr: ToastrService
   ) {
     this.roomId = this.route.snapshot.params['roomId'];
-
     const state = this.router.getCurrentNavigation()?.extras?.state;
     console.log('state', state);
     this.username = state?.['username'];
@@ -48,9 +45,13 @@ export class EditorPageComponent implements OnInit, OnDestroy {
   }
 
   private cleanupSocketConnection() {
-    this.socket.disconnect();
-    this.socket.off(ACTIONS.JOINED);
-    this.socket.off(ACTIONS.DISCONNECTED);
+    if (this.socket) {
+      this.socket.disconnect();
+      this.socket.off(ACTIONS.JOINED);
+      this.socket.off(ACTIONS.DISCONNECTED);
+      this.socket.off(ACTIONS.CODE_CHANGE);
+      this.socket.off(ACTIONS.CURSOR_POSITION);
+    }
   }
 
   private initSocketConnection(): void {
@@ -83,7 +84,6 @@ export class EditorPageComponent implements OnInit, OnDestroy {
         code: this.code,
         socketId,
       })
-
     });
 
     // Listening for disconnected event

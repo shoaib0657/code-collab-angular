@@ -14,7 +14,12 @@ app.use(cors({
 
 const server = http.createServer(app);
 
-const io = new Server(server);
+const io = new Server(server, {
+    cors: {
+        origin: 'http://localhost:4200',
+        methods: ['GET', 'POST']
+    }
+});
 
 interface UserSocketMap {
     [key: string]: string;
@@ -63,6 +68,11 @@ io.on('connection', (socket) => {
         io.to(socketId).emit(ACTIONS.CODE_CHANGE, { code });
     })
 
+    socket.on(ACTIONS.CURSOR_POSITION, ({ roomId, cursor }) => {
+        const username = userSocketMap[socket.id];
+        socket.in(roomId).emit(ACTIONS.CURSOR_POSITION, { cursor, socketId: socket.id, username });
+    })
+
     socket.on('disconnecting', () => {
         const rooms = Array.from(socket.rooms);
         rooms.forEach((roomId) => {
@@ -70,7 +80,6 @@ io.on('connection', (socket) => {
                 socketId: socket.id,
                 username: userSocketMap[socket.id] 
             })
-            socket.leave(roomId);
         })
 
         delete userSocketMap[socket.id];

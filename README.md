@@ -1,11 +1,24 @@
 # CodeCollab
 
 ## About
-CodeCollab is a collaborative coding platform built using Angular. It allows multiple users to work on code together in real-time.
+CodeCollab is a collaborative coding platform built using Angular, Socket.io and CodeMirror. It allows multiple users to work on code together in real-time, track cursor positions and receive notifications. The platform is built using Angular for the frontend, Node.js for the backend and Socket.io for real-time communication. CodeMirror is used for the code editor.
 
 ## Features
-- Real-time code collaboration
+
+- **Real-time Collaboration**: Multiple users can edit code simultaneously.
+- **Cursor Tracking**: Tracks and displays the cursor position of each collaborator.
+- **Home Page**: Interface to join or create a coding room.
+- **Editor Page**: Integrated code editor using CodeMirror.
 - Syntax highlighting
+
+## Future Scope
+
+1. [] Add syntax highlighting for multiple languages
+2. [] Add support for multiple themes
+3. [] Add support for saving the last theme and language selected by the user in local storage
+4. [] Add support to accept or reject new users trying to join the room
+5. [ ] Add to implement video and voice chat feature inside the editor
+6. [ ] Add support for local code file uploading
 
 ## Installation
 
@@ -22,19 +35,16 @@ CodeCollab is a collaborative coding platform built using Angular. It allows mul
     ```sh
     cd code-collab-angular
     ```
-3. Install dependencies:
-    ```sh
-    npm install
-    ```
-4. Start the development server:
-    ```sh
-    ng serve
-    ```
-5. Open your browser and navigate to `http://localhost:4200`.
 
 ## Usage
-1. Create a new project or join an existing one.
-2. Start collaborating in real-time with other users.
+
+1. **Home Page**:
+   - Enter a room name to join or create a new room.
+   - Press Enter to navigate to the editor page.
+
+2. **Editor Page**:
+   - Start coding in the provided editor.
+   - The cursor position and code changes will be synchronized with all connected clients.
 
 ## Contributing
 Contributions are welcome! Please fork this repository and submit pull requests.
